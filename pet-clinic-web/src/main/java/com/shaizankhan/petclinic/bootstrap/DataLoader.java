@@ -1,10 +1,7 @@
 package com.shaizankhan.petclinic.bootstrap;
 
 import com.shaizankhan.petclinic.model.*;
-import com.shaizankhan.petclinic.services.OwnerService;
-import com.shaizankhan.petclinic.services.PetTypeService;
-import com.shaizankhan.petclinic.services.SpecialityService;
-import com.shaizankhan.petclinic.services.VetService;
+import com.shaizankhan.petclinic.services.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -20,13 +17,15 @@ public class DataLoader implements CommandLineRunner {
     private final VetService vetService;
     private final PetTypeService petTypeService;
     private final SpecialityService specialitiesService;
+    private final VisitService visitService;
 
     public DataLoader(OwnerService ownerService, VetService vetService, PetTypeService petTypeService,
-                      SpecialityService specialitiesService) {
+                      SpecialityService specialitiesService, VisitService visitService) {
         this.ownerService = ownerService;
         this.vetService = vetService;
         this.petTypeService = petTypeService;
         this.specialitiesService = specialitiesService;
+        this.visitService = visitService;
     }
 
     @Override
@@ -79,7 +78,6 @@ public class DataLoader implements CommandLineRunner {
         owner2.setAddress("123 Roger Street");
         owner2.setCity("Miami");
         owner2.setTelephone("123456790");
-        ownerService.save(owner2);
 
         Pet rogersCat = new Pet();
         rogersCat.setPetType(savedCatType);
@@ -87,6 +85,15 @@ public class DataLoader implements CommandLineRunner {
         rogersCat.setBirthDate(LocalDate.now());
         rogersCat.setName("Just Cat");
         owner2.getPets().add(rogersCat);
+
+        ownerService.save(owner2);
+
+        Visit catVisit = new Visit();
+        catVisit.setPet(rogersCat);
+        catVisit.setDate(LocalDate.now());
+        catVisit.setDescription("Sneezy Kitty");
+
+        visitService.save(catVisit);
 
         System.out.println("Loaded owners...");
 
